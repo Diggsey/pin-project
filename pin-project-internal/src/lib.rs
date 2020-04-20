@@ -17,16 +17,7 @@
 #[allow(unused_extern_crates)]
 extern crate proc_macro;
 
-#[macro_use]
-mod utils;
-
-mod pin_project;
-mod pinned_drop;
-mod project;
-
 use proc_macro::TokenStream;
-
-use utils::{Immutable, Mutable};
 
 /// An attribute that creates a projection struct covering all the fields.
 ///
@@ -323,7 +314,7 @@ use utils::{Immutable, Mutable};
 /// [`pinned_drop`]: ./attr.pinned_drop.html
 #[proc_macro_attribute]
 pub fn pin_project(args: TokenStream, input: TokenStream) -> TokenStream {
-    pin_project::attribute(&args.into(), input.into()).into()
+    pin_project_internal_impl::pin_project(args, input)
 }
 
 /// An attribute for annotating an impl block that implements [`Drop`].
@@ -363,8 +354,7 @@ pub fn pin_project(args: TokenStream, input: TokenStream) -> TokenStream {
 /// [pinned-drop]: ./attr.pin_project.html#pinned_drop
 #[proc_macro_attribute]
 pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input);
-    pinned_drop::attribute(&args.into(), input).into()
+    pin_project_internal_impl::pinned_drop(args, input)
 }
 
 /// An attribute to provide way to refer to the projected type returned by
@@ -512,8 +502,7 @@ pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
 /// ```
 #[proc_macro_attribute]
 pub fn project(args: TokenStream, input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input);
-    project::attribute(&args.into(), input, Mutable).into()
+    pin_project_internal_impl::project(args, input)
 }
 
 /// An attribute to provide way to refer to the projected type returned by
@@ -527,13 +516,12 @@ pub fn project(args: TokenStream, input: TokenStream) -> TokenStream {
 /// [`project`]: ./attr.project.html
 #[proc_macro_attribute]
 pub fn project_ref(args: TokenStream, input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input);
-    project::attribute(&args.into(), input, Immutable).into()
+    pin_project_internal_impl::project_ref(args, input)
 }
 
 /// An internal helper macro.
 #[doc(hidden)]
 #[proc_macro_derive(__PinProjectInternalDerive, attributes(pin))]
 pub fn __pin_project_internal_derive(input: TokenStream) -> TokenStream {
-    pin_project::derive(input.into()).into()
+    pin_project_internal_impl::__pin_project_internal_derive(input)
 }

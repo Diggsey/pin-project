@@ -17,6 +17,7 @@ A crate for safe and ergonomic pin-projection.
 [workspace]
 members = [
     "pin-project-internal",
+    "pin-project-internal-impl",
     "tests/ui/auxiliary",
     "tests/doc",
 ]
