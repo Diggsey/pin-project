@@ -71,11 +71,11 @@ jobs:
           cargo install cargo-hack
       - name: cargo test
         run: |
-          cargo test --all
+          cargo test --all --all-features
       - name: cargo test -- --ignored
         if: matrix.rust == 'nightly'
         run: |
-          cargo test --all -- --ignored
+          cargo test --all --all-features -- --ignored
       # Refs: https://github.com/rust-lang/cargo/issues/5657
       - name: cargo check -Zminimal-versions
         if: matrix.rust == 'nightly'
